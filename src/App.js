@@ -10,6 +10,19 @@ function App() {
   const [users,setUser]=useState([]);
 
 
+  function deletefunc(id){
+    fetch(`http://localhost:3333/lists/${id}`,{
+      method:'DELETE'
+    }).then((result)=>{
+      result.json().then((resp)=>{
+        console.warn(resp);
+        getList();
+      })
+      
+  })
+}
+
+
   function saveData()
 {
   let data={id,name,email,address,mobile,website}
@@ -29,13 +42,17 @@ function App() {
   })
 }
 
+function getList(){
+  fetch("http://localhost:3333/lists").then((result)=>{
+    result.json().then((resp)=>{
+      // console.warn(resp)
+      setUser(resp)
+    })
+})
+}
+
   useEffect(()=>{
-    fetch("http://localhost:3333/lists").then((result)=>{
-       result.json().then((resp)=>{
-         // console.warn(resp)
-         setUser(resp)
-       })
-   })
+    getList();
    },[])
    console.warn(users)
   return (
@@ -77,6 +94,7 @@ function App() {
            <td>{item.address.street}</td>
             <td>{item.phone}</td>
             <td>{item.website}</td>
+            <td><button type='button' onClick={()=>deletefunc(item.id)}>DELETE</button></td>
           </tr>
           )
         }
